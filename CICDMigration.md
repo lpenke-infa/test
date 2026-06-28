@@ -31,12 +31,6 @@ tools/cicd_tool.py → CICD/main.py
 - **Total Lines:** 268
 - **Purpose:** Git operations for asset migration
 
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `GitOperationError` | 14 | Custom exception for Git operation failures |
-
 #### Functions
 
 | Function | Line | Lines | Purpose |
@@ -93,12 +87,6 @@ TYPE_EXTENSIONS = {
 ### 4. `createProjectsAndFolders.py`
 - **Total Lines:** 307
 - **Purpose:** Creates required project and folder structure in target environment
-
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `ProjectFolderError` | 11 | Custom exception for project/folder operation failures |
 
 #### Functions
 
@@ -200,12 +188,6 @@ Logs/CICDMigration.log  (append mode)
 - **Total Lines:** 218
 - **Purpose:** Main orchestration of 8-step migration workflow
 
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `MigrationError` | 22 | Custom exception for migration failures |
-
 #### Functions
 
 | Function | Line | Lines | Purpose |
@@ -219,12 +201,6 @@ Logs/CICDMigration.log  (append mode)
 ### 9. `postMigrationTag.py`
 - **Total Lines:** 204
 - **Purpose:** Applies tags to migrated assets in target environment
-
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `TaggingError` | 11 | Custom exception for tagging operation failures |
 
 #### Functions
 
@@ -251,12 +227,6 @@ POST /public/core/v3/tagging - Apply tags
 - **Total Lines:** 213
 - **Purpose:** Imports assets from Git to target IICS environment
 
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `PullOperationError` | 12 | Custom exception for pull operation failures |
-
 #### Functions
 
 | Function | Line | Lines | Purpose |
@@ -282,12 +252,6 @@ GET  /public/core/v3/commit/pull/{taskId} - Check status
 ### 11. `taggedAssets.py`
 - **Total Lines:** 228
 - **Purpose:** Retrieves tagged assets from source environment
-
-#### Classes
-
-| Class | Line | Purpose |
-|-------|------|---------|
-| `AssetRetrievalError` | 11 | Custom exception for asset retrieval failures |
 
 #### Functions
 
@@ -658,6 +622,25 @@ User Acceptance Testing
 
 ## Error Handling
 
+### Exception Handling
+
+The CICD module uses standard Python `Exception` class for all error handling, maintaining consistency with Pre-Migration and Post-Migration modules.
+
+**Example:**
+```python
+try:
+    result = run_git_command(cmd)
+except Exception as e:
+    logger.error(f"Git operation failed: {str(e)}")
+    raise Exception(f"Git operation failed: {str(e)}") from e
+```
+
+All exceptions include:
+- Descriptive error messages
+- Original exception chaining (using `from e`)
+- Full stack traces in logs
+- Context about which operation failed
+
 ### Retry Logic
 
 All API calls use exponential backoff with 3 retries:
@@ -726,7 +709,7 @@ import pymssql  # Optional for database logging
 | **Total Files** | 12 |
 | **Total Lines** | ~1,918 |
 | **Total Functions** | 31 |
-| **Total Classes** | 6 |
+| **Total Classes** | 0 (uses standard exceptions) |
 | **Migration Steps** | 8 |
 | **API Endpoints** | ~10 |
 | **Supported Asset Types** | 24+ |
@@ -969,6 +952,7 @@ POST /public/core/v3/tagging
 | 1.0 | 2026-06-28 | Initial release with 8-step workflow |
 | 1.1 | 2026-06-28 | Added standardized logging format |
 | 1.2 | 2026-06-28 | Integrated with Slack bot automation |
+| 1.3 | 2026-06-28 | Removed custom exception classes, uses standard Python exceptions |
 
 ---
 
